@@ -4,7 +4,7 @@ import { polyglot_hashes } from "./hashes";
 
 // Type definitions
 type Hash = number[];
-type Color = 'w' | 'b';
+type Color = "w" | "b";
 
 /**
  * The `ChessHasher` class provides methods to generate Zobrist hashes for chess positions.
@@ -23,10 +23,10 @@ type Color = 'w' | 'b';
  * ```
  */
 export class ChessHasher {
-  private static readonly hashes: string[] = polyglot_hashes
+  private static readonly hashes: string[] = polyglot_hashes;
 
-
-  private static readonly emptyHash: Hash = ChessHasher.parseHexString("0000000000000000");
+  private static readonly emptyHash: Hash =
+    ChessHasher.parseHexString("0000000000000000");
 
   private error: boolean = false;
   private enPasRank: number = -1;
@@ -58,7 +58,7 @@ export class ChessHasher {
    * @returns The hexadecimal string representation of the byte array.
    */
   private static createHexString(arr: Hash): string {
-    return arr.map(byte => byte.toString(16).padStart(2, '0')).join('');
+    return arr.map((byte) => byte.toString(16).padStart(2, "0")).join("");
   }
 
   /**
@@ -84,7 +84,10 @@ export class ChessHasher {
    * @returns The resulting hash array after the XOR operation.
    */
   private xorHash(arr: Hash, num: number): Hash {
-    return ChessHasher.xorArrays(arr, ChessHasher.parseHexString(ChessHasher.hashes[num]));
+    return ChessHasher.xorArrays(
+      arr,
+      ChessHasher.parseHexString(ChessHasher.hashes[num])
+    );
   }
 
   /**
@@ -104,7 +107,7 @@ export class ChessHasher {
     const f = str.charCodeAt(0) - 97;
     const r = str.charCodeAt(1) - 49;
 
-    if ((f < 0) || (f > 7) || (r < 0) || (r > 7)) {
+    if (f < 0 || f > 7 || r < 0 || r > 7) {
       this.error = true;
       return;
     }
@@ -121,7 +124,7 @@ export class ChessHasher {
    * @returns The updated hash array. If the color is white, the hash is XORed with 780.
    */
   private hashSide(arr: Hash, str: Color): Hash {
-    return str === 'w' ? this.xorHash(arr, 780) : arr;
+    return str === "w" ? this.xorHash(arr, 780) : arr;
   }
 
   /**
@@ -144,23 +147,22 @@ export class ChessHasher {
     return arr;
   }
 
-
   /**
    * Hashes the pieces on the chessboard based on the given FEN string.
-   * 
+   *
    * @param arr - The initial hash array.
    * @param str - The FEN string representing the board state.
    * @returns The updated hash array after processing the pieces.
-   * 
+   *
    * @remarks
    * This function processes each rank of the FEN string, updating the hash array
-   * by XORing values based on the piece type and position. It also checks for 
+   * by XORing values based on the piece type and position. It also checks for
    * en passant conditions and sets the `pawnNearby` flag if applicable.
-   * 
-   * The function expects the FEN string to have exactly 8 ranks. If the ranks 
-   * are not 8 or if any rank does not sum up to 8 files, the `error` flag is set 
+   *
+   * The function expects the FEN string to have exactly 8 ranks. If the ranks
+   * are not 8 or if any rank does not sum up to 8 files, the `error` flag is set
    * to true and the original hash array is returned.
-   * 
+   *
    * The piece types are represented as follows:
    * - 'p': Black pawn
    * - 'P': White pawn
@@ -174,9 +176,9 @@ export class ChessHasher {
    * - 'Q': White queen
    * - 'k': Black king
    * - 'K': White king
-   * 
+   *
    * Empty squares are represented by digits '1' to '8'.
-   * 
+   *
    * @example
    * ```typescript
    * const initialHash: Hash = ...;
@@ -197,17 +199,37 @@ export class ChessHasher {
         switch (ranks[i][j]) {
           case "p":
             arr = this.xorHash(arr, 8 * rank + file);
-            if ((this.enPasRank == 2) && (rank == 3) && (this.enPasFile > 0) && (file == this.enPasFile - 1))
+            if (
+              this.enPasRank == 2 &&
+              rank == 3 &&
+              this.enPasFile > 0 &&
+              file == this.enPasFile - 1
+            )
               this.pawnNearby = true;
-            if ((this.enPasRank == 2) && (rank == 3) && (this.enPasFile < 7) && (file == this.enPasFile + 1))
+            if (
+              this.enPasRank == 2 &&
+              rank == 3 &&
+              this.enPasFile < 7 &&
+              file == this.enPasFile + 1
+            )
               this.pawnNearby = true;
             file++;
             break;
           case "P":
             arr = this.xorHash(arr, 64 * 1 + 8 * rank + file);
-            if ((this.enPasRank == 5) && (rank == 4) && (this.enPasFile > 0) && (file == this.enPasFile - 1))
+            if (
+              this.enPasRank == 5 &&
+              rank == 4 &&
+              this.enPasFile > 0 &&
+              file == this.enPasFile - 1
+            )
               this.pawnNearby = true;
-            if ((this.enPasRank == 5) && (rank == 4) && (this.enPasFile < 7) && (file == this.enPasFile + 1))
+            if (
+              this.enPasRank == 5 &&
+              rank == 4 &&
+              this.enPasFile < 7 &&
+              file == this.enPasFile + 1
+            )
               this.pawnNearby = true;
             file++;
             break;
@@ -268,8 +290,7 @@ export class ChessHasher {
             return arr;
         }
       }
-      if (file != 8)
-        this.error = true;
+      if (file != 8) this.error = true;
     }
     return arr;
   }
@@ -298,14 +319,16 @@ export class ChessHasher {
     this.enPasFile = -1;
     this.pawnNearby = false;
 
-
     // Validate FEN format
-    const validFenPattern = /^([rnbqkpRNBQKP1-8]+\/){7}[rnbqkpRNBQKP1-8]+ [wb] [KQkq-]{1,4} [a-h1-8-]{1,2} \d+ \d+$/;
+    const validFenPattern =
+      /^([rnbqkpRNBQKP1-8]+\/){7}[rnbqkpRNBQKP1-8]+ [wb] [KQkq-]{1,4} [a-h1-8-]{1,2} \d+ \d+$/;
     if (!validFenPattern.test(fen)) {
       return "Wrong position";
     }
 
-    const [pieces, color, castling, enPassant, ..._rest] = fen.trim().split(" ");
+    const [pieces, color, castling, enPassant, ..._rest] = fen
+      .trim()
+      .split(" ");
 
     if (!pieces || !color || !castling || !enPassant) {
       this.error = true;
