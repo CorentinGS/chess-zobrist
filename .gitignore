@@ -4,3 +4,8 @@
 coverage/
 dist/
 .pnpm-store/
+
+.vscode/
+.idea/
+
+.npm
