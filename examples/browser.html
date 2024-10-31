@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chess Position Hasher Example</title>
+  </head>
+  <body>
+    <h1>Chess Position Hasher</h1>
+    <input type="text" id="fen" value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" />
+    <button onclick="hashPosition()">Hash Position</button>
+    <div id="result"></div>
+
+    <!-- Use IIFE build -->
+    <script src="https://unpkg.com/chess-zobrist@0.1.0"></script>
+    <script>
+      function hashPosition() {
+        const fen = document.getElementById('fen').value;
+        const hasher = new ChessPositionHasher.ChessHasher();
+        const hash = hasher.hashPosition(fen);
+        document.getElementById('result').textContent = hash;
+      }
+    </script>
+  </body>
+</html>
