@@ -5,17 +5,6 @@ import { polyglot_hashes } from "./hashes";
 // Type definitions
 type Hash = number[];
 type Color = 'w' | 'b';
-type File = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-type Rank = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
-interface Position {
-  pieces: string;
-  color: Color;
-  castling: string;
-  enPassant: string;
-  halfmove: number;
-  fullmove: number;
-}
 
 /**
  * The `ChessHasher` class provides methods to generate Zobrist hashes for chess positions.
@@ -207,7 +196,7 @@ export class ChessHasher {
       for (let j = 0; j < ranks[i].length; j++) {
         switch (ranks[i][j]) {
           case "p":
-            arr = this.xorHash(arr, 64 * 0 + 8 * rank + file);
+            arr = this.xorHash(arr, 8 * rank + file);
             if ((this.enPasRank == 2) && (rank == 3) && (this.enPasFile > 0) && (file == this.enPasFile - 1))
               this.pawnNearby = true;
             if ((this.enPasRank == 2) && (rank == 3) && (this.enPasFile < 7) && (file == this.enPasFile + 1))
